@@ -1,5 +1,4 @@
 import Lector as LectorClass
-import Escritor as Writer
 import sys
 from tkinter import filedialog
 from tkinter import *
@@ -23,10 +22,19 @@ class Menu:
         print("")
         print("Escriba el número de acuerdo a la opción que desee: ")
 
+    def imprimir_menu_de_carga(self):
+        print("")
+        print("---------------- Carga de archivos: ----------------")
+        print("")
+        print(" [1] Escribir dirección")
+        print(" [2] Seleccionar archivo")
+        print(" [3] Regresar al menú principal")
+        print("")
+        print("Escriba el número de acuerdo a la opción que desee: ")
+
     def iniciar_menu(self):
         while(self.exit == False):
             self.imprimir_menu()
-
             try:
                 selected_option = int(input())
             except:
@@ -35,15 +43,47 @@ class Menu:
                 continue
 
             if selected_option == 1:
-                self.lector_obj.reset_all_r()               
-                self.lector_obj.open_a_file()
+                back = False
+
+                while back == False:
+                    self.imprimir_menu_de_carga()
+                    try:
+                        selected_option_l = int(input())
+                    except:
+                        print("Error de entrada. Intente de nuevo")
+                        print("")
+                        continue
+
+                    if selected_option_l == 1:
+                        print("Escriba una ruta específica: ")
+                        root = input()
+                        if root == "":
+                            print("Dirección vacía.")
+                            print("")
+                        else:
+                            self.lector_obj.file_root = root
+                            if self.lector_obj.read_file():
+                                back = True
+                    elif selected_option_l == 2:
+                        if self.lector_obj.open_a_file():
+                            if self.lector_obj.read_file():
+                                back = True
+                    elif selected_option_l == 3:
+                        print("Regresando al menú principal.")
+                        print("")
+                        back = True
+                    else:
+                        print("La opción no es válida, intente de nuevo.")
+                        print("")
+
+                
             elif selected_option == 2:                
-                
+                print("opción 2 elegida")
             elif selected_option == 3:
-                
+                print("opción 3 elegida")
             elif selected_option == 4:
-                print("-------------------------------------------------------")
-                print("------------------------ DATOS ------------------------")
+                print("")
+                print("----------------------------- DATOS -----------------------------")
                 print("")
                 print("     Nombre: Percy Juventino Duarte Gálvez")
                 print("     Carnet: 201709149")
@@ -51,10 +91,10 @@ class Menu:
                 print("     Sección: D ")
                 print("     Cuarto semestre")
                 print("")
-                print("-------------------------------------------------------")
+                print("-----------------------------------------------------------------")
                 print("")
             elif selected_option == 5:
-                
+                print("opción 5 elegida")
             elif selected_option == 6:
                 self.exit = True
             else:
