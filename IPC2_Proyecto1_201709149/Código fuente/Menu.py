@@ -63,10 +63,12 @@ class Menu:
                         else:
                             self.lector_obj.file_root = root
                             if self.lector_obj.read_file():
+                                self.lector_obj.read_done = True
                                 back = True
                     elif selected_option_l == 2:
                         if self.lector_obj.open_a_file():
                             if self.lector_obj.read_file():
+                                self.lector_obj.read_done = True
                                 back = True
                     elif selected_option_l == 3:
                         print("Regresando al menú principal.")
@@ -78,7 +80,12 @@ class Menu:
 
                 
             elif selected_option == 2:                
-                print("opción 2 elegida")
+                print("Se leerán los datos...")
+                if self.lector_obj.read_done:
+                    self.lector_obj.proces_file()
+                else:
+                    print("No se ha cargado un archivo.")
+                    print("")
             elif selected_option == 3:
                 print("opción 3 elegida")
             elif selected_option == 4:
