@@ -11,7 +11,7 @@ class Menu:
         self.exit = exit
 
     def imprimir_menu(self):
-        print("----------- MENÚ PRINCIPAL -----------")
+        print("------------------------- MENÚ PRINCIPAL -------------------------")
         print("")
         print(" [1] Cargar archivo")
         print(" [2] Procesar archivo")
@@ -41,10 +41,8 @@ class Menu:
                 print("Error de entrada. Intente de nuevo")
                 print("")
                 continue
-
             if selected_option == 1:
                 back = False
-
                 while back == False:
                     self.imprimir_menu_de_carga()
                     try:
@@ -54,8 +52,16 @@ class Menu:
                         print("")
                         continue
 
+                    # Reseteo de datos antes de cualquier intento de carga.
+                    if selected_option_l == 1 or selected_option == 2:
+                        if self.lector_obj.first_load and self.lector_obj.read_done:
+                            self.lector_obj.first_load = False
+                        else:
+                            print("Borrando datos anteriores...")
+                            self.lector_obj.reset_all_r()
+
                     if selected_option_l == 1:
-                        print("Escriba una ruta específica: ")
+                        print("Escriba una ruta específica:")
                         root = input()
                         if root == "":
                             print("Dirección vacía.")
@@ -63,11 +69,16 @@ class Menu:
                         else:
                             self.lector_obj.file_root = root
                             if self.lector_obj.read_file():
+                                print("Carga realizada exitosamente.")
+                                print("")
                                 self.lector_obj.read_done = True
                                 back = True
                     elif selected_option_l == 2:
+                        print("Elija el archivo para cargarlo:")
                         if self.lector_obj.open_a_file():
                             if self.lector_obj.read_file():
+                                print("Carga realizada exitosamente.")
+                                print("")
                                 self.lector_obj.read_done = True
                                 back = True
                     elif selected_option_l == 3:
@@ -76,11 +87,9 @@ class Menu:
                         back = True
                     else:
                         print("La opción no es válida, intente de nuevo.")
-                        print("")
-
-                
+                        print("")                
             elif selected_option == 2:                
-                print("Se leerán los datos...")
+                print("Se leerán los datos del archivo cargado...")
                 if self.lector_obj.read_done:
                     self.lector_obj.proces_file()
                 else:

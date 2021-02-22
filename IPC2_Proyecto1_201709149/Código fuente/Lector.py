@@ -9,13 +9,14 @@ class Lector:
 
     file_root = None
     file = None
-    file_lines = None
     read_done = False
 
     circular_list_of_matrices = None
 
-    def open_a_file(self):        
-        print("Se cargará un archivo: ")
+    first_load = True
+
+    def open_a_file(self):
+        print("Se cargará un archivo...")
         open_correctly = True
         try:
             root = Tk()
@@ -36,7 +37,7 @@ class Lector:
     def read_file(self):
         load_correctly = True
         print("")
-        print("Se cargará el archivo. . .")
+        print("Se leerá el directorio...")
         try:
             self.file = minidom.parse(self.file_root)
         except:
@@ -48,44 +49,61 @@ class Lector:
 
     def proces_file(self):
         print("Se leerán las matrices...")
-        self.circular_list_of_matrices = Matrices.Matrices()
         list_of_matrices = self.file.getElementsByTagName("matriz")        
         cant_of_matrices = len(list_of_matrices)
-        print(list_of_matrices)
-        print("cantidad: " + str(cant_of_matrices))
 
+        if cant_of_matrices != 0:
+            print("Creando matrices de frecuencia de accesos...")
+            self.circular_list_of_matrices = Matrices.Matrices()
 
-        for i in range(cant_of_matrices):
-            matrix_name = list_of_matrices[i].attributes["nombre"].value
-            n = int(list_of_matrices[i].attributes["n"].value)
-            m = int(list_of_matrices[i].attributes["m"].value)
+            for i in range(cant_of_matrices):
+                matrix_name = list_of_matrices[i].attributes["nombre"].value
+                n = int(list_of_matrices[i].attributes["n"].value)
+                m = int(list_of_matrices[i].attributes["m"].value)
 
-            print("Creando la matriz: #" + str(i+1))            
+                print("Creando la matriz: #" + str(i+1) + "...")            
 
-            matrix_base = [[0] * m for i in range(n)]
-            data_list = list_of_matrices[i].getElementsByTagName("dato")
+                matrix_base = [[0] * m for i in range(n)]
+                data_list = list_of_matrices[i].getElementsByTagName("dato")
 
-            for j in range(n*m):
-                #Valores de fila y columna (menos uno para ajustar el índice)
-                x = int(data_list[j].attributes["x"].value) - 1
-                y = int(data_list[j].attributes["y"].value) - 1
-                dato = int(data_list[j].childNodes[0].data)
-                print("dato = " + str(dato))
+                for j in range(n*m):
+                    #Valores de fila y columna (menos uno para ajustar el índice)
+                    x = int(data_list[j].attributes["x"].value) - 1
+                    y = int(data_list[j].attributes["y"].value) - 1
 
-                #print("n*m = " + str(n*m))
-                #print("j: " + str(j))
-                #print("x: " + str(x))
-                #print("y: " + str(y))
-                matrix_base[x][y] = dato
+                    if x > (n-1) or y > (m-1):
+                        print("")
+                        print("Se ha encontrado un parámetro que excede el tamaño permitido en la matriz #"
+                            + str(i) + ", se cancelará el proceso de esta matríz.")
+                        print("")
+                        break
 
-            self.circular_list_of_matrices.add_matrix(Matriz.Matriz(n, m, matrix_name, matrix_base))
+                    dato = int(data_list[j].childNodes[0].data)
+                    
+                    #print("dato = " + str(dato))
 
+                    #print("n*m = " + str(n*m))
+                    #print("j: " + str(j))
+                    #print("x: " + str(x))
+                    #print("y: " + str(y))
+                    matrix_base[x][y] = dato
 
-
-
-
-
+                self.circular_list_of_matrices.add_matrix(Matriz.Matriz(n, m, matrix_name, matrix_base))
+            print("Matrices creadas.")
+            print("Creando matrices de patrón de accesos...")
+            self.circular_list_of_matrices.construct_pattern_matrices()
+            print("Creando matrices reducidas...")
+            self.circular_list_of_matrices.construct_reduced_matrices()
+            print("Se imprimirán los datos de las matrices:")
+            self.circular_list_of_matrices.print_matrices_data()
+            print("")
+        else:
+            print("")
+            print("No se han encontrado matrices.")
+            print("")
 
     def reset_all_r(self):
         self.file_root = None
         self.file = None
+        self.read_done = False
+        self.circular_list_of_matrices = None
