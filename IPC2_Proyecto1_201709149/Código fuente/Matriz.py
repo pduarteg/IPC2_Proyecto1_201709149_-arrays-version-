@@ -40,6 +40,7 @@ class Matriz:
 					self.pattern_matrix[i][j] = 0
 
 	def construct_reduced_matrix(self):
+		self.groups_data = []
 		self.cant_of_groups = 0
 		aux_matrix = self.pattern_matrix
 		pattern_lines = []
@@ -50,32 +51,36 @@ class Matriz:
 			for j in range(self.m):
 				aux_string += str(self.pattern_matrix[i][j])
 			pattern_lines.append(aux_string)
-
+		
 		# Creando grupos según patrones
 		print("Creando grupos...")
-		counter = 0
+
 		while True:
 			added = False
 		#Para crear el primer grupo.
 			if self.cant_of_groups == 0:
-		 		self.groups_data.append([0, pattern_lines[0]])
-		 		self.cant_of_groups += 1
+				first_pattern = str(pattern_lines[0])				
+				self.groups_data.append([0, first_pattern])
+				self.cant_of_groups += 1
 			else:
 		 		#recorrerá toda la matriz de patrones, si encuentra uno no agregado, lo agrega.
-		 		for i in range(self.n):
+		 		for i in range(len(pattern_lines)):
+		 			added = False
 		 			patter_to_ver = str(pattern_lines[i])
+
 		 			for j in range(self.cant_of_groups):
-		 				added = False
 		 				if str(self.groups_data[j][1]) == str(patter_to_ver):
 		 					added = True
 		 					break
+		 				else:
+		 					added = False
 
 		 			if added == False:
 		 				self.groups_data.append([0, patter_to_ver])
 		 				self.cant_of_groups += 1
 		 				break
-		 		if added:
-		 			break
+			if added:
+		 		break		
 
 		reduced_aux = [[0] * self.m for i in range(self.cant_of_groups)]
 
@@ -98,8 +103,21 @@ class Matriz:
 
 		self.reduced_frecuence_matrix = reduced_aux
 
-					
+		def get_name(sef):
+			return str(self.name)
 
+		def get_n(sef):
+			return str(self.n)
 
+		def get_m(sef):
+			return str(self.m)
 
-						
+		def get_groups_data(sef):
+			return str(self.groups_data)
+
+		def get_g(sef):
+			return str(self.cant_of_groups)
+
+		def get_rN(sef):
+			return len(self.reduced_frecuence_matrix)
+			

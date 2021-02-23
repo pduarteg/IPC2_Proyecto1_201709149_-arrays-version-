@@ -1,11 +1,14 @@
 import Lector as LectorClass
+import Escritor as WriterClass
 import sys
 from tkinter import filedialog
 from tkinter import *
+import re
 
 class Menu:
 
     lector_obj = LectorClass.Lector()
+    writer_obj = WriterClass.Escritor()
 
     def __init__(self, exit):
         self.exit = exit
@@ -56,8 +59,8 @@ class Menu:
                     if selected_option_l == 1 or selected_option == 2:
                         if self.lector_obj.first_load and self.lector_obj.read_done:
                             self.lector_obj.first_load = False
-                        else:
-                            print("Borrando datos anteriores...")
+                        if self.lector_obj.first_load == False:
+                            print("Borrando datos anterioes...")
                             self.lector_obj.reset_all_r()
 
                     if selected_option_l == 1:
@@ -96,7 +99,25 @@ class Menu:
                     print("No se ha cargado un archivo.")
                     print("")
             elif selected_option == 3:
-                print("opción 3 elegida")
+                print("Se solicitará la escritura de archivo de salida...")
+                if self.lector_obj.request_output_file_write():
+                    print("Se iniciará la escritura del archivo...")
+                    print("Ingrese un directorio específico: ")
+                    output_root = input()
+
+                    if output_root == "":
+                        print("La ruta está vacía.")
+                        print("")
+                    elif re.search(r"[*?<>|]", output_root):
+                        print("Se encontraron carácteres no permitidos.")
+                    else:
+                        print("Se escribirá el archivo en la ruta: ")
+                        print(output_root)
+                        self.writer_obj.initial_data_request(self.lector_obj.circular_list_of_matrices, output_root)
+                        self.writer_obj.writeXML()
+                else:
+                    print("No hay datos cargados o procesados para crear un archivo de salida.")
+                    print("")
             elif selected_option == 4:
                 print("")
                 print("----------------------------- DATOS -----------------------------")
@@ -113,6 +134,8 @@ class Menu:
                 print("opción 5 elegida")
             elif selected_option == 6:
                 self.exit = True
+            elif selected_option == 7:
+                self.lector_obj.circular_list_of_matrices.print_matrices_data()
             else:
                 print("La opción no es válida, intente de nuevo.")
                 print("")
