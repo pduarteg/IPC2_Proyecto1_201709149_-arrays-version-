@@ -1,7 +1,6 @@
 from tkinter import filedialog
 from tkinter import *
 from xml.dom import minidom
-import re
 import Matrices
 import Matriz
 
@@ -99,8 +98,8 @@ class Lector:
                 self.procesed_data = True
                 print("Procesado de datos finalizado.")
                 print("")
-                print("Se imprimirán los datos de las matrices:")
-                self.circular_list_of_matrices.print_matrices_data()
+                #print("Se imprimirán los datos de las matrices:")
+                #self.circular_list_of_matrices.print_matrices_data()
                 print("")
             else:
                 print("")
@@ -116,3 +115,9 @@ class Lector:
         self.read_done = False
         self.circular_list_of_matrices = None
         self.procesed_data = False
+
+    def request_output_file_write(self):
+        if self.read_done and self.procesed_data:
+            return True
+        else:
+            return False
