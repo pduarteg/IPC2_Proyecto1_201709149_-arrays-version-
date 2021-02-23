@@ -36,9 +36,9 @@ class Matrices:
 			print("Nombre: " + str(aux_matrix.name))
 			print("n: " + str(aux_matrix.n) + ", m: " + str(aux_matrix.m))
 			print("Cantidad de grupos: " + str(aux_matrix.cant_of_groups))
-			aux_matrix.print_data(aux_matrix.frecuence_matrix)
-			aux_matrix.print_data(aux_matrix.pattern_matrix)
-			aux_matrix.print_data(aux_matrix.reduced_frecuence_matrix)
+			aux_matrix.print_data(aux_matrix.frecuence_matrix, "Matríz de frecuencias")
+			aux_matrix.print_data(aux_matrix.pattern_matrix, "Matríz de patrones de acceso")
+			aux_matrix.print_data(aux_matrix.reduced_frecuence_matrix, "Matríz reducida")
 			aux_matrix = aux_matrix.next
 
 	def construct_reduced_matrices(self):

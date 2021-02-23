@@ -14,12 +14,13 @@ class Matriz:
 		self.name = name
 		self.frecuence_matrix = frecuence_matrix
 
-	def print_data(self, matrix_to_print):
+	def print_data(self, matrix_to_print, matrix_name):
 		print("")
 		pN = len(matrix_to_print)
 		pM = len(matrix_to_print[0])
 
-		print("pN: " + str(pN) + ", pM: " + str(pM))
+		print(matrix_name + ":")
+		print("n: " + str(pN) + ", m: " + str(pM))
 
 		for i in range(pN):
 			for j in range(pM):
@@ -50,28 +51,48 @@ class Matriz:
 				aux_string += str(self.pattern_matrix[i][j])
 			pattern_lines.append(aux_string)
 
-		# Creando información de grupos:
-		for i in range(self.n):
-			acces_pattern = pattern_lines[i]
+		# Creando grupos según patrones
+		print("Creando grupos...")
+		counter = 0
+		while True:
+			added = False
+		#Para crear el primer grupo.
 			if self.cant_of_groups == 0:
-				self.groups_data.append([1, acces_pattern])
-				self.cant_of_groups += 1
+		 		self.groups_data.append([0, pattern_lines[0]])
+		 		self.cant_of_groups += 1
 			else:
-				for j in range(self.cant_of_groups):
-					if acces_pattern == self.groups_data[i-1][1]:
-						self.groups_data[i-1][0] += 1
-					else:
-						self.groups_data.append([1, acces_pattern])
-						self.cant_of_groups += 1
+		 		#recorrerá toda la matriz de patrones, si encuentra uno no agregado, lo agrega.
+		 		for i in range(self.n):
+		 			patter_to_ver = str(pattern_lines[i])
+		 			for j in range(self.cant_of_groups):
+		 				added = False
+		 				if str(self.groups_data[j][1]) == str(patter_to_ver):
+		 					added = True
+		 					break
+
+		 			if added == False:
+		 				self.groups_data.append([0, patter_to_ver])
+		 				self.cant_of_groups += 1
+		 				break
+		 		if added:
+		 			break
 
 		reduced_aux = [[0] * self.m for i in range(self.cant_of_groups)]
 
+		# Agrega la cardinalidad de los grupos:
+		for i in range(self.cant_of_groups):
+			for j in range(self.n):
+				if self.groups_data[i][1] == pattern_lines[j]:
+					self.groups_data[i][0] += 1
+
 		# Reduciendo matríz, sumando tuplas:
-		for i in range(len(self.groups_data)):
+		print("Realizando suma de tuplas...")
+		for i in range(self.cant_of_groups):
 			acces_pattern = self.groups_data[i][1]
 			
 			for j in range(len(pattern_lines)):
 				if acces_pattern == pattern_lines[j]:
+					#suma una fila
 					for l in range(self.m):
 						reduced_aux[i][l] += self.frecuence_matrix[j][l]
 
