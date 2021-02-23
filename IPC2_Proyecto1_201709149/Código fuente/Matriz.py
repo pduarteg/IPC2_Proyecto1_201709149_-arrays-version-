@@ -102,22 +102,3 @@ class Matriz:
 						reduced_aux[i][l] += self.frecuence_matrix[j][l]
 
 		self.reduced_frecuence_matrix = reduced_aux
-
-		def get_name(sef):
-			return str(self.name)
-
-		def get_n(sef):
-			return str(self.n)
-
-		def get_m(sef):
-			return str(self.m)
-
-		def get_groups_data(sef):
-			return str(self.groups_data)
-
-		def get_g(sef):
-			return str(self.cant_of_groups)
-
-		def get_rN(sef):
-			return len(self.reduced_frecuence_matrix)
-			

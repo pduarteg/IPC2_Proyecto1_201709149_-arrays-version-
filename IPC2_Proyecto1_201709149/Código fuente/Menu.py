@@ -14,7 +14,9 @@ class Menu:
         self.exit = exit
 
     def imprimir_menu(self):
-        print("------------------------- MENÚ PRINCIPAL -------------------------")
+        print("**************************************************************************")
+        print("*                             MENÚ PRINCIPAL                             *")
+        print("**************************************************************************")
         print("")
         print(" [1] Cargar archivo")
         print(" [2] Procesar archivo")
@@ -57,9 +59,7 @@ class Menu:
 
                     # Reseteo de datos antes de cualquier intento de carga.
                     if selected_option_l == 1 or selected_option == 2:
-                        if self.lector_obj.first_load and self.lector_obj.read_done:
-                            self.lector_obj.first_load = False
-                        if self.lector_obj.first_load == False:
+                        if self.lector_obj.read_done:
                             print("Borrando datos anterioes...")
                             self.lector_obj.reset_all_r()
 
@@ -74,7 +74,7 @@ class Menu:
                             if self.lector_obj.read_file():
                                 print("Carga realizada exitosamente.")
                                 print("")
-                                self.lector_obj.read_done = True
+                                self.lector_obj.read_done = True                                
                                 back = True
                     elif selected_option_l == 2:
                         print("Elija el archivo para cargarlo:")
@@ -107,7 +107,9 @@ class Menu:
 
                     if output_root == "":
                         print("La ruta está vacía.")
-                        print("")
+                        print("Se creará el archivo en el direcotrio actual.")
+                        self.writer_obj.initial_data_request(self.lector_obj.circular_list_of_matrices, output_root)
+                        self.writer_obj.writeXML()
                     elif re.search(r"[*?<>|]", output_root):
                         print("Se encontraron carácteres no permitidos.")
                     else:
@@ -120,18 +122,25 @@ class Menu:
                     print("")
             elif selected_option == 4:
                 print("")
-                print("----------------------------- DATOS -----------------------------")
-                print("")
-                print("     Nombre: Percy Juventino Duarte Gálvez")
-                print("     Carnet: 201709149")
-                print("     Curso: Introducción a la Programación y Computación 2")
-                print("     Sección: D ")
-                print("     Cuarto semestre")
-                print("")
-                print("-----------------------------------------------------------------")
+                print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ DATOS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+                print("|                                                                 |")
+                print("|     Nombre: Percy Juventino Duarte Gálvez                       |")
+                print("|     Carnet: 201709149                                           |")
+                print("|     Curso: Introducción a la Programación y Computación 2       |")
+                print("|     Sección: \"D\"                                                |")
+                print("|     Cuarto semestre de Ingeniería en Ciencias y Sistemas        |")
+                print("|     Primer semestre 2021                                        |")
+                print("|                                                                 |")
+                print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
                 print("")
             elif selected_option == 5:
-                print("opción 5 elegida")
+                if self.lector_obj.request_output_file_write():
+                    print("")
+                    print("---Matrices cargadas en memoria:")
+                    print("")
+                else:
+                    print("No hay datos cargados o procesados para crear una gráfica.")
+                    print("")
             elif selected_option == 6:
                 self.exit = True
             elif selected_option == 7:

@@ -11,9 +11,7 @@ class Lector:
     read_done = False
     procesed_data = False
 
-    circular_list_of_matrices = None
-
-    first_load = True
+    circular_list_of_matrices = None    
 
     def open_a_file(self):
         print("Se cargará un archivo...")
