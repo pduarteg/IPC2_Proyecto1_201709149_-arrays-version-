@@ -4,6 +4,7 @@ import sys
 from tkinter import filedialog
 from tkinter import *
 import re
+import os
 
 class Menu:
 
@@ -14,16 +15,16 @@ class Menu:
         self.exit = exit
 
     def imprimir_menu(self):
-        print("**************************************************************************")
-        print("*                             MENÚ PRINCIPAL                             *")
-        print("**************************************************************************")
+        print("****************************************************************************")
+        print("*                              MENÚ PRINCIPAL                              *")
+        print("****************************************************************************")
         print("")
         print(" [1] Cargar archivo")
         print(" [2] Procesar archivo")
         print(" [3] Escribir archivo de salida")
         print(" [4] Mostrar datos del estudiante")
         print(" [5] Generar gráfica")
-        print(" [6] Salida")
+        print(" [6] Salir")
         print("")
         print("Escriba el número de acuerdo a la opción que desee: ")
 
@@ -36,6 +37,46 @@ class Menu:
         print(" [3] Regresar al menú principal")
         print("")
         print("Escriba el número de acuerdo a la opción que desee: ")
+
+    def print_graph_menu(self):
+        print("")
+        print("--------------- Creación de gráficas: ---------------")
+        print("")
+        print("Se mostrarán las matrices actuales en memoria:")
+        print("")
+        last = self.lector_obj.print_matrices_names()
+        print(" [" + str(last) + "] Graficar todas")
+        print(" [" + str(last + 1) + "] Cancelar")
+        print("")
+        print("Escriba el número de acuerdo a la matríz que desee graficar, todas o para cancelar.")
+
+    def request_of_graph(self):
+            m_cant = self.lector_obj.circular_list_of_matrices.cant
+            while True:
+                self.print_graph_menu()
+                selected_option_g = 0
+                try:
+                    selected_option_g = int(input())
+                except:
+                    print("Error de entrada. Intente de nuevo.")
+                    print("")
+                    continue
+
+                print("La opcion a graficar fue: " + str(selected_option_g))
+
+                if selected_option_g == (m_cant + 1):
+                    print("Se graficarán todas")
+                    self.writer_obj.writeDOT(True, None)
+                    break
+                elif selected_option_g > 0 and selected_option_g <= m_cant:
+                    to_graph_matrix = self.lector_obj.circular_list_of_matrices.first
+                    for i in range(selected_option_g):
+                        to_graph_matrix = to_graph_matrix.next
+
+                    self.writer_obj.writeDOT(False, to_graph_matrix)
+                elif selected_option_g == (m_cant+2):
+                    print("")
+                    break
 
     def iniciar_menu(self):
         while(self.exit == False):
@@ -50,6 +91,7 @@ class Menu:
                 back = False
                 while back == False:
                     self.imprimir_menu_de_carga()
+                    selected_option_l = 0
                     try:
                         selected_option_l = int(input())
                     except:
@@ -61,7 +103,7 @@ class Menu:
                     if selected_option_l == 1 or selected_option == 2:
                         if self.lector_obj.read_done:
                             print("Borrando datos anterioes...")
-                            self.lector_obj.reset_all_r()
+                        self.lector_obj.reset_all_r()
 
                     if selected_option_l == 1:
                         print("Escriba una ruta específica:")
@@ -134,12 +176,26 @@ class Menu:
                 print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
                 print("")
             elif selected_option == 5:
+                print("Se solicitará la escritura de gráfica...")
                 if self.lector_obj.request_output_file_write():
-                    print("")
-                    print("---Matrices cargadas en memoria:")
-                    print("")
+                    print("Se iniciará la escritura del archivo DOT...")
+                    print("Ingrese un directorio específico: ")
+                    output_root = input()
+
+                    if output_root == "":
+                        print("La ruta está vacía.")
+                        print("Se creará el archivo en el directorio actual.")
+                        self.writer_obj.initial_data_request(self.lector_obj.circular_list_of_matrices, output_root)
+                        self.request_of_graph()
+                    elif re.search(r"[*?<>|]", output_root):
+                        print("Se encontraron carácteres no permitidos.")
+                    else:
+                        print("Se escribirá el archivo en la ruta: ")
+                        print(output_root)
+                        self.writer_obj.initial_data_request(self.lector_obj.circular_list_of_matrices, output_root)
+                        self.request_of_graph()
                 else:
-                    print("No hay datos cargados o procesados para crear una gráfica.")
+                    print("No hay datos cargados o procesados para crear un archivo de salida.")
                     print("")
             elif selected_option == 6:
                 self.exit = True
@@ -148,4 +204,3 @@ class Menu:
             else:
                 print("La opción no es válida, intente de nuevo.")
                 print("")
-

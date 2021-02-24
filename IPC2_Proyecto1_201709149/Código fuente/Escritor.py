@@ -11,8 +11,11 @@ class Escritor:
 
 	def writeXML(self):
 		matrices_l = self.matrices
-		#dirA = os.getcwd()
+		
 		dirA = self.output_root
+		if dirA == "":
+			dirA = os.getcwd()
+			
 		dirB = dirA + "\\IPC2_Proyecto1_Salida.xml"
 		
 		print("Escribiendo archivo en ruta específicada...")
@@ -48,14 +51,88 @@ class Escritor:
 			temp_matrix = temp_matrix.next
 		file.write("</matrices>\n")
 		# Doc end
+
 		print("Escritura terminada.")
 		file.close()
 		file = open(dirB)
 		dirC = str(dirB)
 		#print("Se abrirá el archivo:")
-		#os.system("IPC2_Proyecto1_Salida.xml")
+		os.system("IPC2_Proyecto1_Salida.xml")
 		print("")
 
-	def reset_all_w(self):
-		self.table_content = []		
-		self.lines_list = []
+	# Si complete es True, la gráfica es para todo el documento.
+	# Si complete es False, la gráfica es para una sola matriz que se pasa como parámetro.
+	def writeDOT(self, complete, to_graph_matrix):
+		matrices_l = self.matrices			
+		dirA = self.output_root
+		dirB = dirA + "\\Grafica"
+			
+		print("Creando gráfica en ruta específicada...")
+		try:
+			file = open(dirB, "w")
+		except:
+			print("La ruta específicada ha producido un error.")
+			print("Ruta en conflicto: " + str(dirB))
+			print("Creando gráfica en la ruta actual...")
+			dirA = os.getcwd()
+			dirB = dirA + "\\Grafica"
+			file = open(dirB, "w")
+
+		print("Ruta de salida: " + str(dirB))
+
+		file.write("digraph Grafica {\n")
+		file.write("	{\n")
+		file.write("\n")
+
+		if complete:
+			temp_matrix = matrices_l.first
+			for i in range(matrices_l.cant):
+				file.write("		n" + str(i) + " [shape=doublecircle color=red label=\"n=" + str(temp_matrix.n) + "\"]\n")
+				file.write("		m" + str(i) + " [shape=doublecircle color=red label=\"m=" + str(temp_matrix.m) + "\"]\n")
+
+				for j in range(temp_matrix.n):
+					for k in range(temp_matrix.m):
+						file.write("		m" + str(i) + "c" + str(j) + str(k) + " [shape=circle label=\"" + str(temp_matrix.frecuence_matrix[j][k]) + "\"]\n")
+				file.write("\n")
+				temp_matrix = temp_matrix.next
+			file.write("	}\n")
+
+			temp_matrix = matrices_l.first
+			for i in range(matrices_l.cant):
+				file.write("\n")
+				file.write("	Matrices->" + temp_matrix.name + ";\n")
+				file.write("\n")
+				file.write("		" + temp_matrix.name + "->n" + str(i) + ";\n")
+				file.write("		" + temp_matrix.name + "->m" + str(i) + ";\n")
+
+				for j in range(temp_matrix.n):
+					file.write("\n")
+					for k in range(temp_matrix.m):
+						if j == 0:
+							file.write("		" + temp_matrix.name + "->" + "m" + str(i) + "c" + str(j) + str(k) + ";\n")
+						else:
+							file.write("		" + "m" + str(i) + "c" + str(j-1) + str(k) + "->" + "m" + str(i) + "c" + str(j) + str(k) + ";\n")
+				temp_matrix = temp_matrix.next
+		else:
+			file.write("		n [shape=doublecircle color=red label=\"n=" + str(to_graph_matrix.n) + "\"]\n")
+			file.write("		m [shape=doublecircle color=red label=\"m=" + str(to_graph_matrix.m) + "\"]\n")
+			file.write("	}\n")
+
+			for j in range(to_graph_matrix.n):
+					for k in range(to_graph_matrix.m):
+						if j == 0:
+							file.write("		" + to_graph_matrix.name + "->" + str(to_graph_matrix.frecuence_matrix[j][k]) + ";\n")
+						else:
+							file.write("		" + str(to_graph_matrix.frecuence_matrix[j-1][k]) + "->" + str(to_graph_matrix.frecuence_matrix[j][k]) + ";\n")
+		file.write("}")
+		# Doc end
+
+		print("Escritura terminada.")
+		file.close()
+		file = open(dirB)
+		dirC = str(dirB)
+		#print("Se abrirá el archivo:")
+		os.system("DOT -Tbmp -O Grafica")
+		os.system("Grafica.bmp")
+		print("")	
+

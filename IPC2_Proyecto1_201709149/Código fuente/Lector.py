@@ -119,3 +119,12 @@ class Lector:
             return True
         else:
             return False
+
+    def print_matrices_names(self):
+        last = 0
+        temp_matrix = self.circular_list_of_matrices.first
+        for i in range(self.circular_list_of_matrices.cant):
+            last = i+1
+            print(" [" + str(last) + "] " + temp_matrix.name)
+            temp_matrix = temp_matrix.next
+        return last + 1
