@@ -39,7 +39,7 @@ class Lector:
         try:
             self.file = minidom.parse(self.file_root)
         except:
-            print("Archivo no encontrado.")
+            print("Archivo no encontrado o no válido.")
             print("")
             load_correctly = False
 
@@ -56,14 +56,24 @@ class Lector:
                 self.circular_list_of_matrices = Matrices.Matrices()
 
                 for i in range(cant_of_matrices):
-                    matrix_name = list_of_matrices[i].attributes["nombre"].value
-                    n = int(list_of_matrices[i].attributes["n"].value)
-                    m = int(list_of_matrices[i].attributes["m"].value)
+                    print("Creando la matriz: #" + str(i+1) + "...")
 
-                    print("Creando la matriz: #" + str(i+1) + "...")            
-
+                    try:
+                        matrix_name = list_of_matrices[i].attributes["nombre"].value
+                        n = int(list_of_matrices[i].attributes["n"].value)
+                        m = int(list_of_matrices[i].attributes["m"].value)
+                    except:
+                        print("No se han encontrado los atributos requerridos para esta matriz. ")
+                        print("Será omitida.")
+                        continue
+                    
                     matrix_base = [[0] * m for i in range(n)]
                     data_list = list_of_matrices[i].getElementsByTagName("dato")
+
+                    if data_list == []:
+                        print("Matríz sin datos encontrados.")
+                        print("Será omitida.")
+                        continue
 
                     for j in range(n*m):
                         #Valores de fila y columna (menos uno para ajustar el índice)
@@ -77,14 +87,7 @@ class Lector:
                             print("")
                             break
 
-                        dato = int(data_list[j].childNodes[0].data)
-                        
-                        #print("dato = " + str(dato))
-
-                        #print("n*m = " + str(n*m))
-                        #print("j: " + str(j))
-                        #print("x: " + str(x))
-                        #print("y: " + str(y))
+                        dato = int(data_list[j].childNodes[0].data)                        
                         matrix_base[x][y] = dato
 
                     self.circular_list_of_matrices.add_matrix(Matriz.Matriz(n, m, matrix_name, matrix_base))
@@ -115,8 +118,9 @@ class Lector:
         self.procesed_data = False
 
     def request_output_file_write(self):
-        if self.read_done and self.procesed_data:
-            return True
+        if self.read_done:
+             if self.procesed_data:
+                return True
         else:
             return False
 

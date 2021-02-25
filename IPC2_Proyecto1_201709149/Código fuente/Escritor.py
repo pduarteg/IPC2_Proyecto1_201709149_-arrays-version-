@@ -11,11 +11,11 @@ class Escritor:
 
 	def writeXML(self):
 		matrices_l = self.matrices
-		
+		#dirA = os.getcwd()
 		dirA = self.output_root
 		if dirA == "":
 			dirA = os.getcwd()
-			
+
 		dirB = dirA + "\\IPC2_Proyecto1_Salida.xml"
 		
 		print("Escribiendo archivo en ruta específicada...")
@@ -51,13 +51,13 @@ class Escritor:
 			temp_matrix = temp_matrix.next
 		file.write("</matrices>\n")
 		# Doc end
-
-		print("Escritura terminada.")
 		file.close()
-		file = open(dirB)
-		dirC = str(dirB)
+		print("Escritura terminada.")
+		
+		#file = open(dirB)
+		#dirC = str(dirB)
 		#print("Se abrirá el archivo:")
-		os.system("IPC2_Proyecto1_Salida.xml")
+		#os.system("IPC2_Proyecto1_Salida.xml")
 		print("")
 
 	# Si complete es True, la gráfica es para todo el documento.
@@ -65,6 +65,9 @@ class Escritor:
 	def writeDOT(self, complete, to_graph_matrix):
 		matrices_l = self.matrices			
 		dirA = self.output_root
+		if dirA == "":
+			dirA = os.getcwd()
+
 		dirB = dirA + "\\Grafica"
 			
 		print("Creando gráfica en ruta específicada...")
@@ -116,23 +119,31 @@ class Escritor:
 		else:
 			file.write("		n [shape=doublecircle color=red label=\"n=" + str(to_graph_matrix.n) + "\"]\n")
 			file.write("		m [shape=doublecircle color=red label=\"m=" + str(to_graph_matrix.m) + "\"]\n")
+
+			for j in range(to_graph_matrix.n):
+					for k in range(to_graph_matrix.m):
+						file.write("		mc" + str(j) + str(k) + " [shape=circle label=\"" + str(to_graph_matrix.frecuence_matrix[j][k]) + "\"]\n")
+			file.write("\n")
+
 			file.write("	}\n")
+			file.write("		" + to_graph_matrix.name + "->n;\n")
+			file.write("		" + to_graph_matrix.name + "->m;\n")
 
 			for j in range(to_graph_matrix.n):
 					for k in range(to_graph_matrix.m):
 						if j == 0:
-							file.write("		" + to_graph_matrix.name + "->" + str(to_graph_matrix.frecuence_matrix[j][k]) + ";\n")
+							file.write("		" + to_graph_matrix.name + "->" + "mc" + str(j) + str(k) + ";\n")
 						else:
-							file.write("		" + str(to_graph_matrix.frecuence_matrix[j-1][k]) + "->" + str(to_graph_matrix.frecuence_matrix[j][k]) + ";\n")
+							file.write("		mc" + str(j-1) + str(k) + "->" + "mc" + str(j) + str(k) + ";\n")
 		file.write("}")
 		# Doc end
 
 		print("Escritura terminada.")
+		print("Gráfica creada correctamente. Se abrirá en breve...")
 		file.close()
-		file = open(dirB)
-		dirC = str(dirB)
+		#file = open(dirB)
+		#dirC = str(dirB)
 		#print("Se abrirá el archivo:")
 		os.system("DOT -Tbmp -O Grafica")
 		os.system("Grafica.bmp")
-		print("")	
-
+		print("")
