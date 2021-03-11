@@ -1,4 +1,4 @@
-# IPC2 Proyecto1 - LFP ECYS
+# IPC2 Proyecto1 - ECYS FIUSAC
 
 Programa que lee archvos .xml con datos de matrices de frecuancias de accesos a servidores.
 Transforma las matrices de frecuencias de accesos a matrices binarias de patrones de acesos,
